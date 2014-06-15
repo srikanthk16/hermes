@@ -1,0 +1,26 @@
+To enter data into database is tedious by entering row wise, for that we have reduced complexity by 
+simple inputting a txt,rtf,text files with nexeccary data, given below are the skeletons of how those files 
+should look:
+
+**** transitProvider (buses, trams,metro, rail) ex for bus ****
+busname nooftimings busTimesofNwithSpaces
+ex:
+10 5 10:30 11:30 12:30 1:30 2:30
+**** transitLocation(stops,stations) ex for busstop ****
+stopname 
+ex:
+uppal 
+*** After all stops are defined **
+**neighbor nodes
+stopname noOfNeighbors nNeighborNodesWithSpacesDistanceTime
+ex:
+uppal 4 nagole 10 5 ramanthapur 4 5 habsiguda 9 9 boduppal 1 5
+note: here distance was considered km and time as min nagole 10 5 means uppal to nagole distance is
+** special nodes
+stopname noOfSpecialNodes mSpecialNodesWithSpacesDistanceTime
+ex:
+uppal 3 Secunderabad Koti L.B.Nagar
+**** transitHolder(bus-stop relations) ****(defined only after all providers and locations are defined)
+stopname busname
+ex:
+uppal 280

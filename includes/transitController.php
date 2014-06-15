@@ -1,0 +1,18 @@
+<?php
+/* ****************************************** */
+/* 		 BabyEgg Software@2014		   		  */
+/* Authors:									  */
+/*			Srikanth Kasukurthi				  */
+/*			Shreya Gangishetty				  */
+/*			Saivivek Therala 				  */
+/* * @license 								  */
+/*http://www.apache.org/licenses/LICENSE-2.0  */
+/*  Apache License 2.0						  */
+/*@link http://github.com/srikanthk16/transit */	
+/* ****************************************** */
+include('db.php');
+class transitController
+{
+
+}
+?>
