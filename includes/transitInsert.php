@@ -37,6 +37,7 @@ enctype="multipart/form-data" onsubmit="return checkCheckBoxes(this);">
     <input type ="checkbox" name="cBox" value = "2">Locations</input>
     <input type ="checkbox" name="cBox" value = "3">Special Nodes</input>
 	 <input type ="checkbox" name="cBox" value = "4">Neighbor Nodes</input>
+	  <input type ="checkbox" name="cBox" value = "5">Holders</input>
 <input type="submit" name="submit" value="Submit">
 </form>';
 }
@@ -65,7 +66,73 @@ $time=array_slice($data,2,2+$num);
 $tp->insertProvider($name,$time);
 }
 }
-
+else if($_POST['cBox']==2)
+{
+include('transitProvider.php');
+include('transitLocation.php');
+$tl=new transitLocation();
+foreach($rows as $r=> $d)
+{
+$data=explode(' ',$d);
+$name=$data[0];
+$tl->insertLocation($name);
+}
+}
+else if($_POST['cBox']==3)
+{
+include('transitProvider.php');
+include('transitLocation.php');
+$tl=new transitLocation();
+foreach($rows as $r=> $d)
+{
+$data=explode(' ',$d);
+$name=$data[0];
+$num=$data[1];
+$sNodes=array_slice($data,2,2+$num);
+$tl->insertSpecialnodes($name,$sNodes);
+}
+}
+else if($_POST['cBox']==4)
+{
+include('transitProvider.php');
+include('transitLocation.php');
+$tl=new transitLocation();
+foreach($rows as $r=> $d)
+{
+$data=explode(' ',$d);
+$name=$data[0];
+$num=$data[1];
+$i=0;
+$k=3;
+$nValue=array();
+while($i<$num)
+{
+$nNode=$data[$k];
+$k=$k+1;
+$nValue[0]=$data[$k];
+$k=$k+1;
+$nValue[1]=$data[$k];
+$k=$k+1;
+$tl->insertNeighbornodes($name,$nNode,$nValue);
+}
+}
+}
+else if($_POST['cBox']==5)
+{
+include('transitController.php');
+$tc=new transitController();
+foreach($rows as $r=> $d)
+{
+$data=explode(' ',$d);
+$sname=$data[0];
+$bname=$data[1];
+$tc->insertHolder($sname,$bname);
+}
+}
+else
+{
+echo 'invalid request , possible hacking reported to admin';
+}
 }
 
 ?>

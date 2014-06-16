@@ -17,7 +17,7 @@ ex:
 uppal 4 nagole 10 5 ramanthapur 4 5 habsiguda 9 9 boduppal 1 5
 note: here distance was considered km and time as min nagole 10 5 means uppal to nagole distance is
 ** special nodes
-stopname noOfSpecialNodes mSpecialNodesWithSpacesDistanceTime
+stopname noOfSpecialNodes mSpecialNodes
 ex:
 uppal 3 Secunderabad Koti L.B.Nagar
 **** transitHolder(bus-stop relations) ****(defined only after all providers and locations are defined)

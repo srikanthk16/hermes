@@ -18,43 +18,49 @@ public $t_id;
 public $t_name;
 public $t_time;
 private $i;
-public function insertProvider($name)
+public function insertLocation($name)
 {	
 	global $mysqli;
 	$mysqli->query("INSERT INTO transitLocation VALUES(null,'$name')");
 	$id=$mysqli->insert_id;
 	echo $id;
 }
-public function insertSpecialnodes($name)
+public function insertSpecialnodes($name,$sNodes)
 {	
 	global $mysqli;
-	$query="SELECT s_id from transitProvider where s_name='$name' limit 1";
+	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
 	$queryResult=$mysqli::query($query);
 	$result=$mysqli_result::fetch_assoc();
 	$id=$result['s_id'];
 	foreach( $sNodes as $t)
-	{
-		mysqli::query("INSERT INTO transitLocation_specialnodes VALUES('$id','$t')");
+	{	
+		$query="SELECT s_id from transitLocation where s_name='$t' limit 1";
+	$queryResult=$mysqli::query($query);
+	$result=$mysqli_result::fetch_assoc();
+	$sid=$result['s_id'];
+		mysqli::query("INSERT INTO transitLocation_specialnodes VALUES('$id','$sid')");
 	}
 }	
-public function insertNeighbornodes($name)
+public function insertNeighbornodes($name,$nNodes,$nValues)
 {
 	global $mysqli;
-	$query="SELECT s_id from transitProvider where s_name='$name' limit 1";
+	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
 	$queryResult=$mysqli::query($query);
 	$result=$mysqli_result::fetch_assoc();
 	$id=$result['s_id'];
 	$i=0;
-	foreach($nNodes as $t)
-	{
-		mysqli::query("INSERT INTO transitLocation_neighbors VALUES('$id','$t','$nValues[$i][0]','$nValues[$i][1]')");
-	}
+	$query="SELECT s_id from transitLocation where s_name='$t' limit 1";
+	$queryResult=$mysqli::query($query);
+	$result=$mysqli_result::fetch_assoc();
+	$nid=$result['s_id'];
+	mysqli::query("INSERT INTO transitLocation_neighbors VALUES('$id','$nid','$nValues[0]','$nValues[1]')");
+	
 
 }
 public function infoLocation($name)
 {
 	global $mysqli;
-	$query="SELECT s_id from transitProvider where s_name='$name' limit 1";
+	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
 	$queryResult=$mysqli::query($query);
 	$result=$mysqli_result::fetch_assoc();
 	$id=$result['s_id'];
