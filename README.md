@@ -1,7 +1,9 @@
-anemoi
+Hermes
 ======
 
 NOTE: WORK IN PROGRESS
+
+Hermes is God of Direction
 
 This php written application is for transit systems like buses, trains, metro, trams. It provides users a database to find how to travel from one place to another in the city. It is easy to install and is efficient.
 
