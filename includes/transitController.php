@@ -13,19 +13,23 @@
 include('db.php');
 class transitController
 {
+ public function __construct()
+ {	
+ }
 public function insertHolder($sname,$bname)
 {
 global $mysqli;
 	$query="SELECT b_id from transitProvider where b_name='$bname' limit 1";
-	$queryResult=$mysqli::query($query);
-	$result=$mysqli_result::fetch_assoc();
+	$queryResult=$mysqli->query($query);
+	$result=$mysqli_result->fetch_assoc();
 	$bid=$result['b_id'];
 	$query="SELECT s_id from transitLocation where s_name='$sname' limit 1";
-	$queryResult=$mysqli::query($query);
-	$result=$mysqli_result::fetch_assoc();
+	$queryResult=$mysqli->query($query);
+	$result=$mysqli_result->fetch_assoc();
 	$sid=$result['s_id'];
-	mysqli::query("INSERT INTO transitHolder VALUES('$sid','$bid')");
+	$mysqli->query("INSERT INTO transitHolder VALUES('$sid','$bid')");
 }
+
 public function compute($node1,$node2,$time)
 {
 //algo should go here

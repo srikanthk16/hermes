@@ -51,7 +51,7 @@ if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
     echo "Possible file upload attack!\n";
 }
 $parseFile= file_get_contents($uploadfile);
-$rows=explode('\n',$parseFile);
+$rows=explode("\n",$parseFile);
 if($_POST['cBox']==1)
 {
 include('transitProvider.php');
