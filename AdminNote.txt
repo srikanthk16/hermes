@@ -3,9 +3,9 @@ simple inputting a txt,rtf,text files with nexeccary data, given below are the s
 should look:
 
 **** transitProvider (buses, trams,metro, rail) ex for bus ****
-busname nooftimings busTimesofNwithSpaces
+busname startstop endstop nooftimings busTimesofNwithSpaces
 ex:
-10 5 10:30 11:30 12:30 1:30 2:30
+10 secunderabad hiteccity 5 10:30 11:30 12:30 1:30 2:30
 **** transitLocation(stops,stations) ex for busstop ****
 stopname 
 ex:
@@ -21,6 +21,6 @@ stopname noOfSpecialNodes mSpecialNodes
 ex:
 uppal 3 Secunderabad Koti L.B.Nagar
 **** transitHolder(bus-stop relations) ****(defined only after all providers and locations are defined)
-stopname busname
+stopname busname nooftimes ntimeswithspaces
 ex:
-uppal 280
+uppal 280 3 10:30 11:30 12:30

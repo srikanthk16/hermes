@@ -10,24 +10,27 @@
 /*  Apache License 2.0						  */
 /*@link http://github.com/srikanthk16/transit */	
 /* ****************************************** */
-include('db.php');
 class transitController
 {
  public function __construct()
  {	
  }
-public function insertHolder($sname,$bname)
+public function insertHolder($sname,$bname,$times,$mysqli)
 {
-global $mysqli;
 	$query="SELECT b_id from transitProvider where b_name='$bname' limit 1";
-	$queryResult=$mysqli->query($query);
+	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$bid=$result['b_id'];
 	$query="SELECT s_id from transitLocation where s_name='$sname' limit 1";
 	$queryResult=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$sid=$result['s_id'];
-	$mysqli->query("INSERT INTO transitHolder VALUES('$sid','$bid')");
+	$mysqli->query("INSERT INTO transitHolder VALUES(null,'$sid','$bid')");
+	$id=$mysqli->insert_id;
+	foreach($times as $t)
+	{
+	$mysqli->query("INSERT INTO transitholder_timings VALUES('$id','$t')");
+	}
 }
 
 public function compute($node1,$node2,$time)

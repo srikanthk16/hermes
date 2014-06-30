@@ -1,0 +1,24 @@
+Ghatkesar 2 Annojiguda 2 5 SNIST 3 6
+SNIST 2 Ghatkesar 3 6 Nagaram 4 10
+Nagaram 2 SNIST 4 10 ECIL 3 15
+ECIL 3 Habsiguda 7 20 Malkajgiri 2 10 Nagaram 3 15
+Malkajgiri 2 ECIL 2 10 Lalaguda 3 10
+Lalaguda 2 Malkajgiri 3 10 Secunderabad 5 15
+Annojiguda 2 Ghatkesar 2 5 Narapally 3 6
+Narapally 2 Medipally 1 5 Annojiguda 3 6
+Medipally 2 Depot 1 5 Narapally 1 5
+Depot 2 Boduppal 1 5 Medipally 1 5
+Boduppal 2 Uppal 1 5 Depot 1 5
+Uppal 2 UppalXRoad 2 15 Boduppal 1 5
+UppalXRoad 3 Nagole 2 15 Ramanthapur 2 5 Habsiguda 3 10
+Ramanthapur 2 Amberpet 2 15 UppalXRoad 2 5
+Amberpet 2 Ramanthapur 2 15 Koti 5 20
+Nagole 2 UppalXRoad 2 15 Alkapuri 2 5
+Alkapuri 2 Nagole 2 5 L.B.Nagar 2 3
+L.B.Nagar 2 Koti 10 20 Alkapuri 2 3
+Koti 3 Amberpet 5 20 L.B.Nagar 10 20 RTCXroads 7 15
+Habsiguda 3 UppalXRoad 3 10 Tarnaka 3 5 ECIL 7 20
+Tarnaka 2 Habsiguda 3 5 Secunderabad 2 10
+RTCXroads 2 Koti 7 15 Musheerabad 2 10
+Musheerabad 2 RTCXroads 2 10 Secunderabad 3 5
+Secunderabad 3 Lalaguda 5 15 Tarnaka 2 10 Musheerabad 3 5

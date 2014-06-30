@@ -10,74 +10,75 @@
 /*  Apache License 2.0						  */
 /*@link http://github.com/srikanthk16/transit */	
 /* ****************************************** */
-include("db.php");
+//include("db.php");
 class transitLocation
 {
-public $t_id;
-public $t_name;
-public $t_time;
 public $i;
-public function returnStops()
+public $snames;
+public $result;
+public $id;
+public $sid;
+public function returnStops($mysqli)
 {
-global $mysqli;
-$mysqli->query("SELECT s_name from transitLocation");
-$snames=$mysqli_result->fetch_array();
+$mysqli_result=$mysqli->query("SELECT s_name from transitLocation");
+$snames=array();
+while($row=$mysqli_result->fetch_assoc())
+{
+array_push($snames,$row['s_name']);
+}
 return $snames;
 }
-public function insertLocation($name)
+public function insertLocation($name,$mysqli)
 {	
-	global $mysqli;
-	$mysqli->query("INSERT INTO transitLocation VALUES(null,'$name')");
+	$query="INSERT INTO transitLocation VALUES(null,'$name')";
+	$mysqli_result=$mysqli->query($query);
 	$id=$mysqli->insert_id;
 	echo $id;
 }
-public function insertSpecialnodes($name,$sNodes)
+public function insertSpecialnodes($name,$sNodes,$mysqli)
 {	
-	global $mysqli;
-	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
-	$queryResult=$mysqli->query($query);
+	$query="SELECT s_id from transitLocation where s_name='".$name."\r'";
+	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$id=$result['s_id'];
+	echo $id;
 	foreach( $sNodes as $t)
 	{	
-		$query="SELECT s_id from transitLocation where s_name='$t' limit 1";
-	$queryResult=$mysqli->query($query);
+	$query="SELECT s_id from transitLocation where s_name='".$t."\r' limit 1";
+	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$sid=$result['s_id'];
-		$mysqli->query("INSERT INTO transitLocation_specialnodes VALUES('$id','$sid')");
+	$mysqli->query("INSERT INTO transitLocation_specialnodes VALUES('$id','$sid')");
 	}
 }	
-public function insertNeighbornodes($name,$nNodes,$nValues)
+public function insertNeighbornodes($name,$nNodes,$nValues,$mysqli)
 {
-	global $mysqli;
-	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
-	$queryResult=$mysqli->query($query);
+	$query="SELECT s_id from transitLocation where s_name='".$name."\r' limit 1";
+	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$id=$result['s_id'];
-	$i=0;
-	$query="SELECT s_id from transitLocation where s_name='$t' limit 1";
-	$queryResult=$mysqli->query($query);
+	echo $id;
+	$query="SELECT s_id from transitLocation where s_name='".$nNodes."\r' limit 1";
+	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$nid=$result['s_id'];
-	$mysqli->query("INSERT INTO transitLocation_neighbors VALUES('$id','$nid','$nValues[0]','$nValues[1]')");
-	
-
+	//echo $nid;
+	$query_stat=$mysqli->query("INSERT INTO transitLocation_neighbors VALUES('$id','$nid','$nValues[0]','$nValues[1]')");
 }
-public function infoLocation($name)
+public function infoLocation($name,$mysqli)
 {
-	global $mysqli;
 	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
-	$queryResult=$mysqli->query($query);
+$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$id=$result['s_id'];
 	$bP=array();
-	$bP=$this->returnBuses($id);
+	$bP=$this->returnBuses($id,$mysqli);
+	return $bP;
 }
-public function returnBuses($id)
+public function returnBuses($id,$mysqli)
 {
-	global $mysqli;
 	$query="SELECT b_id from transitHolder where s_id='$id'";
-	$queryResult=$mysqli->query($query);
+	$mysqli_result=$mysqli->query($query);
 	$bid=$mysqli_result->fetch_array();
 	$blist= array();
 	foreach($bid as $idb)
@@ -89,7 +90,7 @@ public function returnBuses($id)
 	}
 	return $blist;
 }
-
 }
+
 ?>
 

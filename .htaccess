@@ -1,1 +1,20 @@
 Options -Indexes 
+
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+<Files *.txt>
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+</Files>
+<Files .htaccess>
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+</Files>
+<Files transitInsert.php>
+    Order Allow,Deny
+    Allow from all
+</Files>

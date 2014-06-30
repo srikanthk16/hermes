@@ -1,0 +1,24 @@
+Ghatkesar 2 ECIL UppalXRoad
+Annojiguda 1 UppalXRoad
+Narapally 1 UppalXRoad
+Medipally 1 UppalXRoad
+Depot 1 UppalXRoad
+Boduppal 1 UppalXRoad
+Uppal 1 UppalXRoad
+UppalXRoad 3 L.B.Nagar Koti Secunderabad
+Nagole 2 UppalXRoad L.B.Nagar
+Alkapuri 2 UppalXRoad L.B.Nagar
+L.B.Nagar 2 UppalXRoad Koti
+Habsiguda 3 UppalXRoad Secunderabad ECIL
+Tarnaka 2 UppalXRoad Secunderabad
+Secunderabad 1 Koti
+SNIST 1 ECIL
+Nagaram 1 ECIL
+ECIL 1 Secunderabad
+Malkajgiri 2 ECIL Secunderabad
+Lalaguda 2 ECIL Secunderabad
+Ramanthapur 2 UppalXRoad Koti
+Amberpet 2 UppalXRoad Koti
+Koti 2 L.B.Nagar Secunderabad
+RTCXroads 2 Koti Secunderabad
+Musheerabad 2 Koti Secunderabad
