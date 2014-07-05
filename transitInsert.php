@@ -74,9 +74,7 @@ $data=explode(' ',$d);
 $name=$data[0];
 $start=$data[1];
 $end=$data[2];
-$num=$data[3];
-$time=array_slice($data,4,4+$num);
-$tp->insertProvider($name,$startstop,$endstop,$time,$mysqli);
+$tp->insertProvider($name,$start,$end,$mysqli);
 }
 }
 else if($_POST['cBox']==2)
@@ -139,14 +137,15 @@ foreach($rows as $r=> $d)
 $data=explode(' ',$d);
 $sname=$data[0];
 $bname=$data[1];
-$num=$data[2];
+$wp=$data[2];
+$num=13;
 $times=array_slice($data,3,3+$num);
-$tc->insertHolder($sname,$bname,$times,$mysqli);
+$tc->insertHolder($sname,$bname,$times,$wp,$mysqli);
 }
 }
 else
 {
-echo 'invalid request / Security breach, reported to admin';
+echo 'Invalid request, reported ';
 }
 
 }

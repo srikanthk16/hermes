@@ -44,12 +44,12 @@ $bnames=$tP->returnBuses($mysqli);
 	 $( "#to" ).autocomplete({
       source: availableStops
     });
-	$("#bus").autocomplete({
-	source: avaiableBuses
-	});
 	$( "#stops" ).autocomplete({
       source: availableStops
     });
+	$("#bus").autocomplete({
+	source: avaiableBuses
+	});
   });
 </script>
   </head>
@@ -76,6 +76,17 @@ $bnames=$tP->returnBuses($mysqli);
   document.getElementById("goku").style.display="block";
    });
    </script>';
+         echo" <script>
+$(document).ready(function() {
+   $('#goku').foundation('reveal', 'open');
+
+});
+$(document).ready(function() {
+   $('a.close-reveal-modal').trigger('click');
+
+});
+
+    </script>";
    include("includes\\transitController.php");
    $from=$_POST["from"];
    $to=$_POST["to"];
@@ -92,9 +103,20 @@ $bnames=$tP->returnBuses($mysqli);
   document.getElementById("goku").style.display="block";
    });
    </script>';
+         echo" <script>
+$(document).ready(function() {
+   $('#goku').foundation('reveal', 'open');
+
+});
+$(document).ready(function() {
+   $('a.close-reveal-modal').trigger('click');
+
+});
+
+    </script>";
 $name=$_POST["bus"];
-$result=$tP->infoProvider($name,$mysqli); 
-   
+$res=$tP->infoProvider($name,$mysqli); 
+$result=" Transport Number: ".$name." is available at following stops ".implode(',',$res);
 }
 else if(isset($_POST['submitS']))
   {
@@ -116,7 +138,8 @@ $(document).ready(function() {
 
     </script>";
 $name=$_POST["stops"];
-$result=$tL->infoLocation($name,$mysqli); 
+$res=$tL->infoLocation($name,$mysqli);
+$result="Transport Numbers available at stop: ".$name." is ".$res; 
 }
 else{}
 ?>
@@ -131,37 +154,35 @@ else{}
 </ul>
 <div class="tab-content">
   <div class="tab active" id="route">
-     <form id="luffy" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
+     <form id="luffy" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
      <div class="large-4 medium-4 columns ui-widget">
 				      <label>From:</label>
-				      <input id="from" type="text" placeholder="From" />
+				      <input id="from" type="text" name="from" placeholder="From" />
 				    </div>
 				    <div class="large-4 medium-4 columns ui-widget">
 				      <label>To:</label>
-				      <input id="to" type="text" placeholder="To" />
+				      <input id="to" type="text" name="to" placeholder="To" />
 					  
 				    </div>
 					<div class="large-4 medium-4 columns ui-widget">
 					<label>Time:</label>
-					<input id="time" type="time" /></div>
+					<input id="time" type="time" name="time"/></div>
 					<div class="large-4 medium-4 columns ui-widget">
 					<input type="submit" class="small button" id="submit" name="submit"/>  </div>
     </form>
   </div>
   <div class="tab" id="bus">
-    <form id="natsu" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
+  <form id="natsu" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
      <div class="large-4 medium-4 columns ui-widget">
-				      
-				      <input id="bus" type="text" placeholder="Bus" /></div>
-				    <input type="submit" class="small button" id="submitB" name="submit"/>
+				      <input id="bus" name="bus" type="text" placeholder="Bus" /></div>
+				    <input type="submit" class="small button" id="submitB" name="submitB"/>
     </form>
   </div>
   <div class="tab" id="stop">
-      <form id="vash" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
+      <form id="vash" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
      <div class="large-4 medium-4 columns ui-widget">
-	
-				      <input id="stops" type="text" placeholder="Stop" /></div>
-				    <input type="submit" class="small button" id="submitS" name="submitS"/> 
+	   <input id="stops" name="stops" type="text" placeholder="Stop" />
+				    <input type="submit" class="small button" id="submitS" name="submitS"/> </div>
     </form>
   </div>
 </div>
@@ -175,8 +196,8 @@ else{}
 	  </br></br></br></br></br></br></br></br>
 	  
 	  <div id="goku" class="reveal-modal" data-reveal>
-  <h2>Search.</h2>
-  <p class="lead"><span></span></p>
+  <h2>Search Results</h2>
+  <p class="lead"><span><?php echo $result;?></span></p>
   
   <a class="close-reveal-modal">&#215;</a>
 </div>

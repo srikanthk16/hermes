@@ -24,15 +24,16 @@ $mysqli_result=$mysqli->query("SELECT b_name from transitProvider");
 $bnames=array();
 while($row=$mysqli_result->fetch_assoc())
 {
-array_push($bnames,$row['s_name']);
+array_push($bnames,$row['b_name']);
 }
 return $bnames;
 }
-public function insertProvider($name,$startstop,$endstop,$time,$mysqli)
+public function insertProvider($name,$startstop,$endstop,$mysqli)
 {	
+	
 	$query="SELECT b_id from transitProvider where b_name='$name' limit 1";
 	$mysqli_result=$mysqli->query($query);
-	if($mysqli_result->num_rows()!=0)
+	if($mysqli_result->num_rows!=0)
 	{
 	$result=$mysqli_result->fetch_assoc();
 	$id=$result['b_id'];
@@ -40,45 +41,40 @@ public function insertProvider($name,$startstop,$endstop,$time,$mysqli)
 	else{
 	$mysqli->query("INSERT INTO transitProvider VALUES(null,'$name')");
 	$id=$mysqli->insert_id;}
-	foreach($time as $t)
-	{	
-		$mysqli->query("INSERT INTO transitprovider_timings VALUES('$id','$startstop','$endstop','$t')");
-	}
-}
-public function returnTimings($id,$mysqli)
-{
-	$mysqli_result=$mysqli->query("SELECT startTime FROM transitProvider_timings WHERE b_id=$id");
-	if(!$mysqli_result) 
-	{
-		return null;
-	}
-	else
-	{
-		return $mysqli_result->fetch_array();
-	}
-}
+	$query="SELECT s_id from transitLocation where s_name='".$startstop."\r'";
+	$mysqli_result=$mysqli->query($query);
+	$result=$mysqli_result->fetch_assoc();
+	$ssid=$result['s_id'];
+	$query="SELECT s_id from transitLocation where s_name='".$endstop."'";
+	$mysqli_result=$mysqli->query($query);
+	$result=$mysqli_result->fetch_assoc();
+	$eid=$result['s_id'];
+	$xid=intval($ssid);
+	$yid=intval($eid);
+	$result1=$mysqli->query("INSERT INTO transitprovider_handler VALUES('$id','$xid','$yid')");
+		}
+
 public function infoProvider($name,$mysqli)
 {
 	$query="SELECT b_id from transitProvider where b_name='$name' limit 1";
 	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$id=$result['b_id'];
-	$timings=$this->returnTimings($id,$mysqli);
 	$stopslist= array();
 	$stopslist=$this->returnStops($id,$mysqli);
-	return array($stopslist,$timings);
+	return $stopslist;
 }
 public function returnStops($id,$mysqli)
 {
-	$query="SELECT s_id from transitHolder where b_id='$id'";
+	$query="SELECT DISTINCT s_id from transitHolder where b_id='$id'";
 	$mysqli_result=$mysqli->query($query);
-	$sid=$mysqli_result->fetch_array();
 	$stops=array();
-	foreach($sid as $idb)
+	while($sid=$mysqli_result->fetch_array(MYSQLI_ASSOC))
 	{
+	$idb=$sid['s_id'];
 		$query="SELECT s_name from transitLocation where s_id='$idb'";
-		$mysqli_result=$mysqli->query($query);
-		$result=$mysqli_result->fetch_assoc();
+		$queryresult=$mysqli->query($query);
+		$result=$queryresult->fetch_assoc();
 		array_push($stops,$result['s_name']);
 	}
 	return $stops;

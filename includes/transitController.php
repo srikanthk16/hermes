@@ -15,20 +15,23 @@ class transitController
  public function __construct()
  {	
  }
-public function insertHolder($sname,$bname,$times,$mysqli)
+public function insertHolder($sname,$bname,$times,$wp,$mysqli)
 {
 	$query="SELECT b_id from transitProvider where b_name='$bname' limit 1";
 	$mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$bid=$result['b_id'];
-	$query="SELECT s_id from transitLocation where s_name='$sname' limit 1";
-	$queryResult=$mysqli->query($query);
+	echo '</br>';
+	$queryx="SELECT s_id from transitLocation where s_name='".$sname."\r'";
+	$mysqli_result=$mysqli->query($queryx);
+	var_dump($mysqli->error);
 	$result=$mysqli_result->fetch_assoc();
 	$sid=$result['s_id'];
-	$mysqli->query("INSERT INTO transitHolder VALUES(null,'$sid','$bid')");
+	$mysqli->query("INSERT INTO transitHolder VALUES(null,'$sid','$bid','$wp')");
 	$id=$mysqli->insert_id;
 	foreach($times as $t)
 	{
+
 	$mysqli->query("INSERT INTO transitholder_timings VALUES('$id','$t')");
 	}
 }

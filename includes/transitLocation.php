@@ -67,25 +67,25 @@ public function insertNeighbornodes($name,$nNodes,$nValues,$mysqli)
 }
 public function infoLocation($name,$mysqli)
 {
-	$query="SELECT s_id from transitLocation where s_name='$name' limit 1";
+	$query="SELECT s_id from transitLocation where s_name='".$name."\r' limit 1";
 $mysqli_result=$mysqli->query($query);
 	$result=$mysqli_result->fetch_assoc();
 	$id=$result['s_id'];
 	$bP=array();
 	$bP=$this->returnBuses($id,$mysqli);
-	return $bP;
+	return implode(",",$bP);
 }
 public function returnBuses($id,$mysqli)
 {
-	$query="SELECT b_id from transitHolder where s_id='$id'";
+	$query="SELECT DISTINCT b_id from transitHolder where s_id='$id'";
 	$mysqli_result=$mysqli->query($query);
-	$bid=$mysqli_result->fetch_array();
 	$blist= array();
-	foreach($bid as $idb)
+	while($bid=$mysqli_result->fetch_array(MYSQLI_ASSOC))
 	{
+	$idb=$bid['b_id'];
 		$query="SELECT b_name from transitProvider where b_id='$idb'";
 		$queryResult=$mysqli->query($query);
-		$result=$mysqli_result->fetch_assoc();
+		$result=$queryResult->fetch_assoc();
 		array_push($blist,$result['b_name']);
 	}
 	return $blist;
