@@ -8,7 +8,7 @@
 /* * @license 								  */
 /*http://www.apache.org/licenses/LICENSE-2.0  */
 /*  Apache License 2.0						  */
-/*@link http://github.com/srikanthk16/transit */	
+/*@link http://github.com/srikanthk16/hermes  */	
 /* ****************************************** */
 ?>
 <html>
@@ -50,20 +50,24 @@ $bnames=$tP->returnBuses($mysqli);
 	$("#bus").autocomplete({
 	source: avaiableBuses
 	});
+	$(document).ready(function() {
+   $('a.reveal-modal').trigger('click');
+
+});
   });
 </script>
   </head>
   <body>  
 	<div class="row">
     <div class="large-3 columns">
-      <h1><img src="img/logo.jpg"/></h1>
+      <h1><img src="img/logo.jpg"/></h1><h3><small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Making you love travelling</small></h3>
     </div>
     <div class="large-9 columns">
       <ul class="inline-list right">
         <li><a href="#">Hermes</a></li>
-        <li><a href="#">Hyderabad</a></li>
-        <li><a href="https://github.com/orgs/CubeLabs/teams/babyegg">BabyEGG</a></li>
-        <li><a href="mail:admin@anemoi.com">Contact</a></li>
+        <li><a href="#hyd">Hyderabad</a></li>
+        <li><a href="https://github.com/begg">BabyEGG</a></li>
+        <li><a href="mail:admin@hermes.com">Contact</a></li>
       </ul>
     </div>
   </div>
@@ -77,10 +81,7 @@ $bnames=$tP->returnBuses($mysqli);
    });
    </script>';
          echo" <script>
-$(document).ready(function() {
-   $('#goku').foundation('reveal', 'open');
 
-});
 $(document).ready(function() {
    $('a.close-reveal-modal').trigger('click');
 
@@ -104,12 +105,13 @@ $(document).ready(function() {
    });
    </script>';
          echo" <script>
+
 $(document).ready(function() {
-   $('#goku').foundation('reveal', 'open');
+   $('a.close-reveal-modal').trigger('click');
 
 });
 $(document).ready(function() {
-   $('a.close-reveal-modal').trigger('click');
+   $('#goku').foundation('reveal', 'open');
 
 });
 
@@ -145,7 +147,7 @@ else{}
 ?>
   <div class="row">    
     <div class="large-9 push-3 columns">
-      <h3>Hermes<small></small></h3> 
+      
 <div class="tabs">
     <ul class="tab-links" data-tab>
   <li class="tab-title active"><a href="#route">Route Search</a></li>
@@ -187,17 +189,21 @@ else{}
   </div>
 </div>
 </div>
-	
-        </br>
+
 	  </br></br></br></br>
 	        </br>
-	  </br></br></br></br></br></br></br></br>
-	        </br>
-	  </br></br></br></br></br></br></br></br>
+	  </br></br></br></br></br>
+
 	  
 	  <div id="goku" class="reveal-modal" data-reveal>
   <h2>Search Results</h2>
   <p class="lead"><span><?php echo $result;?></span></p>
+  
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+ <div id="hyd" class="reveal-modal" data-reveal>
+  <h2>Hyderabad</h2>
+  <p class="lead"><span>City made of love and peace..!!</span></p>
   
   <a class="close-reveal-modal">&#215;</a>
 </div>
@@ -210,14 +216,14 @@ else{}
       <hr/>
       <div class="row">
         <div class="large-6 columns">
-          <p>© Copyright @TeamBabyEGG 2014</p>
+          <p><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache v2 GPL License</a> @TeamBabyEGG 2014</p>
         </div>
         <div class="large-6 columns">
           <ul class="inline-list right">
             <li><a href="#">Hermes</a></li>
             <li><a href="#">Hyderabad</a></li>
-            <li><a href="#">About us</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="https://github.com/begg">About us</a></li>
+            <li><a href="mailto:admin@hermes.com">Contact</a></li>
           </ul>
         </div>
       </div>

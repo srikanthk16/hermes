@@ -8,7 +8,7 @@
 /* * @license 								  */
 /*http://www.apache.org/licenses/LICENSE-2.0  */
 /*  Apache License 2.0						  */
-/*@link http://github.com/srikanthk16/transit */	
+/*@link http://github.com/srikanthk16/hermes  */	
 /* ****************************************** */
 
 $mysqli = new mysqli("localhost", "anemoi", "", "hermes");
