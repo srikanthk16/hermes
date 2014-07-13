@@ -76,14 +76,18 @@ $bnames=$tP->returnBuses($mysqli);
   {
   echo '<script>$(function() 
    {
-  document.getElementById("luffy").style.display="none";
+  document.getElementById("luffy").style.display="block";
   document.getElementById("goku").style.display="block";
    });
    </script>';
          echo" <script>
+$(document).ready(function() {
+   $('#goku').foundation('reveal', 'open');
 
+});
 $(document).ready(function() {
    $('a.close-reveal-modal').trigger('click');
+   window.location.reload();
 
 });
 
@@ -100,20 +104,21 @@ $(document).ready(function() {
   {
   echo '<script>$(function() 
    {
-  document.getElementById("natsu").style.display="none";
+  document.getElementById("natsu").style.display="block";
   document.getElementById("goku").style.display="block";
    });
    </script>';
          echo" <script>
-
-$(document).ready(function() {
-   $('a.close-reveal-modal').trigger('click');
-
-});
 $(document).ready(function() {
    $('#goku').foundation('reveal', 'open');
 
 });
+$(document).ready(function() {
+   $('a.close-reveal-modal').trigger('click');
+   
+
+});
+
 
     </script>";
 $name=$_POST["bus"];

@@ -24,7 +24,7 @@ public function insertHolder($sname,$bname,$times,$wp,$mysqli)
 	echo '</br>';
 	$queryx="SELECT s_id from transitLocation where s_name='".$sname."\r'";
 	$mysqli_result=$mysqli->query($queryx);
-	var_dump($mysqli->error);
+	//var_dump($mysqli->error);
 	$result=$mysqli_result->fetch_assoc();
 	$sid=$result['s_id'];
 	$mysqli->query("INSERT INTO transitHolder VALUES(null,'$sid','$bid','$wp')");
@@ -183,15 +183,15 @@ return array($path,$wp,$dist,$time);
 
 public function compute($id1,$id2,$time,$mysqli)
 	{ 
-		$res = $mysqli->query("SELECT s_id from transitlocation where s_name = '".$id1."\r'");
+		$res = $mysqli->query("SELECT s_id from transitlocation where s_name = '".$id2."\r'");
 		$res1=$res->fetch_assoc();
 		$to=$res1['s_id'];
 			//print_r($to);
-		$res = $mysqli->query("SELECT s_id from transitlocation where s_name='".$id2."\r'");
+		$res = $mysqli->query("SELECT s_id from transitlocation where s_name='".$id1."\r'");
 		$res1=$res->fetch_assoc();
 		$from=$res1['s_id'];
 		//print_r($from);
-		 $result = $mysqli->query("SELECT DISTINCT b_id FROM transitholder WHERE b_id IN(select b_id from transitholder where s_id=$to)and s_id=$from\r");
+		 $result = $mysqli->query("SELECT DISTINCT b_id FROM transitholder WHERE b_id IN(select b_id from transitholder where s_id='$to')and s_id='$from'");
 		$dirb=array();
 			while ($row = $result->fetch_assoc()) {
 			array_push($dirb,$row['b_id']);
@@ -204,77 +204,98 @@ public function compute($id1,$id2,$time,$mysqli)
 			$arr1=array();
 			$arr2=array();
 			$arr3=array();
-			list($arr1,$arr2,$arr3)=$this->calfun($dirb,$mysqli);
+			list($arr1,$arr2,$arr3)=$this->calfun($dirb,$to,$from,$mysqli);
 			//print_r($arr1);
 			//print_r($arr2);
 			//print_r($arr3);
-			var_dump($busno);echo '</br>';var_dump($arr1);echo '</br>';var_dump($arr2);echo '</br>';var_dump($arr3);
-			return(array($busno,$arr1,$arr2,$arr3));
+			//var_dump($busno);echo '</br>';var_dump($arr1);echo '</br>';var_dump($arr2);echo '</br>';var_dump($arr3);
+			$busmo=$this->display($arr1,$mysqli);
+			$res="Avaialble Buses are: ".implode(',',$busmo)."</br>";
+			$res.=$this->calculator($id2,$id1,$from,$to,$time,$arr1,$arr2,$arr3,$mysqli);
+			return $res;
 			}
+			//var_dump($from,$to);
 			if(count($dirb)==0)
 			{
 			$result=$mysqli->query("SELECT ss_id from transitlocation_specialnodes where ss_id IN (select ss_id from transitlocation_specialnodes where s_id=$to)
 									and  s_id=$from");
-			$temp=array();
-				while ($row = $result->fetch_assoc()) 
-				{
-				array_push($temp,$row['ss_id']);
-				}
+				$temp=array();
+					while ($row = $result->fetch_assoc()) {
+					array_push($temp,$row['ss_id']);
+					}
 				foreach($temp as $spl)
 				{
-				$result=$mysqli->query("SELECT b_id FROM transitholder WHERE b_id IN(select b_id from transitholder where s_id=$spl)and s_id=$from");
-				$inb1=array();
-				while ($row = $result->fetch_assoc())
-				{
-				array_push($inb1,$row['b_id']);
-				}
-				//echo $from."to".$spl;
-				$busno=array();
-				$busno=$this->display($inb1,$mysqli);
-				$arr1=array();
-				$arr2=array();
-				$arr3=array();
-				list($arr1,$arr2,$arr3)=$this->calfun($inb1,$mysqli);
-				}
-				$result=$mysqli->query("SELECT b_id FROM transitholder WHERE b_id IN(select b_id from transitholder where s_id=$spl)and s_id=$to");
-				$inb2=array();
-				while ($row = $result->fetch_assoc()) 
-				{
+					$result=$mysqli->query("SELECT DISTINCT b_id FROM transitholder WHERE b_id IN(select b_id from transitholder where s_id='$spl')and s_id='$from'");
+					$inb1=array();
+					while ($row = $result->fetch_assoc())
+					{
+					array_push($inb1,$row['b_id']);
+					}
+					//echo $to."to".$spl;
+					$busno=array();
+					$busno=$this->display($inb1,$mysqli);
+					$arr1=array();
+					$arr2=array();
+					$arr3=array();
+					$qer="SELECT s_name from transitLocation where s_id='$spl' LIMIT 1";
+					$resx=$mysqli->query($qer);
+					$resy=$resx->fetch_assoc();
+					$special=$resy['s_name'];
+					list($arr1,$arr2,$arr3)=$this->calfun($inb1,$from,$spl,$mysqli);
+					list($td,$tt)=$this->retX($from,$spl,$time,$arr1,$arr2,$arr3,$mysqli);
+					$res1=$this->calculator($special,$id1,$from,$spl,$time,$arr1,$arr2,$arr3,$mysqli);
+					$result=$mysqli->query("SELECT DISTINCT b_id FROM transitholder WHERE b_id IN(select b_id from transitholder where s_id='$spl')and s_id='$to'");
+					$inb2=array();
+					while ($row = $result->fetch_assoc())
+					{
 					array_push($inb2,$row['b_id']);
+					}
+					//echo $spl."to".$from;
+					//print_r($inb2);
+					$busno1=array();
+					$busno1=$this->display($inb2,$mysqli);
+					//print_r($busno1);
+					$arr4=array();
+					$arr5=array();
+					$arr6=array();
+					list($arr4,$arr5,$arr6)=$this->calfun($inb2,$spl,$to,$mysqli);
+					$given= strtok($time,":");
+$tok = strtok($given);
+$temp=$given*60+$tok+$tt;
+$b=$temp%60;
+$a= floor($temp/60);
+$time=$a.":".$b;
+					$res2=$this->retSTime($id2,$special,$to,$spl,$time,$arr4,$arr5,$arr6,$mysqli,$from,$spl,$arr1,$arr2,$arr3);
+					//var_dump($inbl,'</br>',$from,$spl,$to,'</br>',$inb2);
+					$res=$res1." </br> ".$res2;
+					return $res;
 				}
-				//echo $spl."to".$to;
-				$busno1=array();
-				$busno1=$this->display($inb1,$mysqli);
-				$arr4=array();
-				$arr5=array();
-				$arr6=array();
-				list($arr4,$arr5,$arr6)=$this->calfun($inb2,$mysqli);
-				var_dump($busno,'</br>',$arr1,'</br>',$arr2,'</br>',$arr3,'</br>',$busno1,'</br>',$arr4,'</br>',$arr5,'</br>',$arr6);
-				return(array($busno,$arr1,$arr2,$arr3,$busno1,$arr4,$arr5,$arr6));
-				}
+				//return
+			}
 			}
 	public function display($busid,$mysqli)
 		{
+		$arr=array();
 		foreach($busid as $t)
-			{ $arr=array();
+			{ 
 			$res= $mysqli->query("SELECT b_name from transitprovider where b_id=$t");
-			while($row=$res->fetch_assoc())
+			while($row=$res->fetch_array(MYSQLI_ASSOC))
 			{
 			array_push($arr,$row['b_name']);
 			}
-			return $arr;
+			
 			}
-		
+		return $arr;
 		} 
 
-public function calfun($arr,$mysqli)
+public function calfun($arr,$id1,$id2,$mysqli)
 {
 	$dist=array();
 	$time=array();
 	for( $p=0;$p<count($arr);$p++)
 	{
 	$a=array();
-	$a = $this->buspath($arr[$p],$mysqli);
+	$a = $this->buspath($arr[$p],$id1,$id2,$mysqli);
 	$i=0;
 	$j=1;
 	$dis=0;
@@ -304,7 +325,89 @@ public function calfun($arr,$mysqli)
 
 }	
 
-public function buspath($bid,$mysqli)
+public function buspath($bid,$id1,$id2,$mysqli)
+{
+$temp=array();
+$flag=1;
+	$result=$mysqli->query("SELECT DISTINCT s_id from transitholder WHERE b_id= $bid ");
+	while ($row = $result->fetch_assoc()) {
+		array_push($temp,$row['s_id']);
+    }
+$result = $mysqli->query("SELECT start from transitprovider_handler WHERE b_id= $bid");
+$d=$result->fetch_assoc();
+$wp=$this->waypoint($bid,$id1,$id2,$mysqli);
+//var_dump($wp);
+if($wp==1)
+{
+$x=$id1;
+$id1=$id2;
+$id2=$x;
+}
+$a=$id1;
+$p=count($temp);
+for( $i=0; $i<$p; $i++)
+{
+if($temp[$i]==$a)
+$temp[$i]=0;
+}
+	$main=array();
+	for($i=0;$i<$p;$i++)
+	{
+	$main[$i]=0;
+	}
+	$l=0;
+	$main[$l]=$a;
+	do
+	{	
+			$neighbor=array();
+			$quer="SELECT DISTINCT n_id from transitlocation_neighbors WHERE s_id = $main[$l] and n_id in(select s_id from transitholder where b_id='$bid')";
+			//var_dump($quer);
+			if(in_array($id1,$neighbor) && in_array($id2,$neighbor))
+			{
+			}
+			else{
+			$result= $mysqli->query($quer);
+			while ($row = $result->fetch_assoc()) {
+			if(intval($row['n_id'])==$id2){//$l=$l+1;
+			//$main[$l]=$row['n_id'];
+			array_push($neighbor,$id2); break;}
+			else{
+			//$l=$l+1;
+			//$main[$l]=$row['n_id'];
+			array_push($neighbor,$row['n_id']);}
+			}}
+			$j=0;
+			while($j<
+			count($neighbor))
+			{	
+				$c=0;
+				for($k=0;$k<count($temp);$k++)
+				{	
+					if($temp[$k]==$neighbor[$j])
+					{	$l++;
+						$c++;
+						$main[$l]=$neighbor[$j];
+				//var_dump($main);echo '</br>';
+						if(in_array($id1,$main) && in_array($id2,$main))
+			{
+			//echo 'here';
+			$flag=0;
+			}
+						$temp[$k]=0;
+						break;
+					}
+				}
+				if($c==1)
+				break;
+				else
+				$j++;
+			
+			} 
+	}while($flag);
+	
+	return($main);
+	}
+public function waypoint($bid,$id1,$id2,$mysqli)
 {
 $temp=array();
 	$result=$mysqli->query("SELECT DISTINCT s_id from transitholder WHERE b_id= $bid ");
@@ -354,8 +457,178 @@ $temp[$i]=0;
 				$j++;
 			} 
 	}while($l<count($temp)-1);
-	//print_r($main);
-	return($main);
-	}
+	$i=array_search($id1,$main);
+	$j=array_search($id2,$main);
+if($i>$j) $wp=1;
+else $wp=0;	
+return $wp;
 }
+		public function calculator($id1,$id2,$from,$to,$time,$arr1,$arr2,$arr3,$mysqli)
+	{
+				$i=array_search(min($arr2),$arr2);
+			$j=array_search(min($arr3),$arr3);
+			$wp=$this->waypoint($arr1[$i],$from,$to,$mysqli);
+			$query="SELECT b_name from transitprovider where b_id='$arr1[$i]' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$result=$queryResult->fetch_assoc();
+			$mindbus=$result['b_name'];
+			$query="SELECT b_name from transitprovider where b_id='$arr1[$j]'  LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$result=$queryResult->fetch_assoc();
+			$mintbus=$result['b_name'];
+			$query="SELECT h_id from transitHolder where s_id='$from' AND b_id='$arr1[$i]' AND waypoint='$wp' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$x=$queryResult->fetch_assoc();
+			$hid=$x['h_id'];
+			//var_dump($hid);
+			$wp=$this->waypoint($arr1[$j],$from,$to,$mysqli);
+			$query="SELECT time FROM `transitholder_timings` WHERE t_id='$hid' AND SUBTIME(time,'$time')=(SELECT MIN(SUBTIME(time,'$time')) from transitholder_timings where t_id='$hid' AND time>='$time') LIMIT 1";
+			$query2Result=$mysqli->query($query);
+			$timex=$query2Result->fetch_assoc();
+			$timetosd=$timex['time'];
+			$query="SELECT h_id from transitHolder where s_id='$from' AND b_id='$arr1[$j]' AND waypoint='$wp' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$x=$queryResult->fetch_assoc();
+			$hid=$x['h_id'];
+			$query="SELECT time FROM `transitholder_timings` WHERE t_id='$hid' AND SUBTIME(time,'$time')=(SELECT MIN(SUBTIME(time,'$time')) from transitholder_timings where t_id='$hid' AND time>='$time') LIMIT 1";
+			$query2Result=$mysqli->query($query);
+			$timex=$query2Result->fetch_assoc();
+			$timetost=$timex['time'];
+			$res="For travelling from ".$id2." to ".$id1." </br>".$mindbus." provider number takes minimum distance of ".$arr2[$i]." kilometers to reach destination available at time:".$timetosd." </br> provider number: ".$mintbus." takes minimum time of ".$arr3[$j]." minutes to reach destination available at time:".$timetost;
+			return $res;
+	}
+	public function retSTime($id1,$id2,$from,$to,$time,$arr1,$arr2,$arr3,$mysqli,$fromx,$tox,$arr1x,$arr2x,$arr3x)
+	{
+	$i=array_search(min($arr2),$arr2);
+			$j=array_search(min($arr3),$arr3);
+			$wp=$this->waypoint($arr1[$i],$from,$to,$mysqli);
+			$query="SELECT b_name from transitprovider where b_id='$arr1[$i]' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$result=$queryResult->fetch_assoc();
+			$mindbus=$result['b_name'];
+			$query="SELECT b_name from transitprovider where b_id='$arr1[$j]'  LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$result=$queryResult->fetch_assoc();
+			$mintbus=$result['b_name'];
+			$query="SELECT h_id from transitHolder where s_id='$from' AND b_id='$arr1[$i]' AND waypoint='$wp' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$x=$queryResult->fetch_assoc();
+			$hid=$x['h_id'];
+			//var_dump($hid);
+			list($td,$tt)=$this->retTime($fromx,$tox,$time,$arr1x,$arr2x,$arr3x,$mysqli);
+			$wp=$this->waypoint($arr1[$j],$from,$to,$mysqli);
+			$query="SELECT time FROM `transitholder_timings` WHERE t_id='$hid' AND SUBTIME(time,'$time')=(SELECT MIN(SUBTIME(time,'$time')) from transitholder_timings where t_id='$hid' AND time>='$time') LIMIT 1";
+			$query2Result=$mysqli->query($query);
+			$timex=$query2Result->fetch_assoc();
+			$timetosd=$timex['time'];
+			$query="SELECT h_id from transitHolder where s_id='$from' AND b_id='$arr1[$j]' AND waypoint='$wp' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$x=$queryResult->fetch_assoc();
+			$hid=$x['h_id'];
+			$query="SELECT time FROM `transitholder_timings` WHERE t_id='$hid' AND SUBTIME(time,'$time')=(SELECT MIN(SUBTIME(time,'$time')) from transitholder_timings where t_id='$hid' AND time>='$time') LIMIT 1";
+			$query2Result=$mysqli->query($query);
+			$timex=$query2Result->fetch_assoc();
+			$timetost=$timex['time'];
+			/*$timetosd=strtotime($timetosd);
+			$timetost=strtotime($timetost);
+			var_dump($timetost,$tt);
+			$timetost=$startTime = date("H:i", strtotime('+$tt', $timetost));
+			$timetosd=$startTime = date("H:i", strtotime('+$td', $timetosd));*/
+			$given= strtok($timetosd,":");
+$tok = strtok($given);
+$temp=$given*60+$tok+$td;
+$b=$temp%60;
+$a= floor($temp/60);
+$timetosd=$a.":".$b;
+$given= strtok($timetost,":");
+$tok = strtok($given);
+$temp=$given*60+$tok+$tt;
+$b=$temp%60;
+$a= floor($temp/60);
+$timetost=$a.":".$b;
+			$res="For travelling from ".$id2." to ".$id1." </br>".$mindbus." provider number takes minimum distance of ".$arr2[$i]." kilometers to reach destination available at time:".$timetosd." </br> provider number: ".$mintbus." takes minimum time of ".$arr3[$j]." minutes to reach destination available at time:".$timetost;
+			return $res;
+	}
+	public function retTime($from,$to,$time,$arr1,$arr2,$arr3,$mysqli)
+	{
+	$i=array_search(min($arr2),$arr2);
+	$jk=array_search(min($arr3),$arr3);
+	$a=array();
+	$a = $this->buspath($arr1[$i],$from,$to,$mysqli);
+	$i=0;
+	$j=1;
+	$dis=0;
+	$tim=0;
+	while($i<count($a)-1){
+		$res = $mysqli->query("SELECT `distance` FROM `transitlocation_neighbors` WHERE s_id= $a[$i] AND n_id= $a[$j]") ;
+		$result = $mysqli->query("SELECT `time` FROM `transitlocation_neighbors` WHERE s_id= $a[$i] AND n_id= $a[$j]") ;
+		$res1=$res->fetch_assoc();
+		$result1=$result->fetch_assoc();
+		$res2=$res1['distance'];	
+		$result2=$result1['time'];
+		$dis=$dis+$res2;
+		$tim=$tim+$result2;
+		$i++;
+		$j++;
+	}
+	$timed=$tim;
+
+$a = $this->buspath($arr1[$jk],$from,$to,$mysqli);
+	$i=0;
+	$j=1;
+	$dis=0;
+	$tim=0;
+	while($i<count($a)-1){
+		$res = $mysqli->query("SELECT `distance` FROM `transitlocation_neighbors` WHERE s_id= $a[$i] AND n_id= $a[$j]") ;
+		$result = $mysqli->query("SELECT `time` FROM `transitlocation_neighbors` WHERE s_id= $a[$i] AND n_id= $a[$j]") ;
+		$res1=$res->fetch_assoc();
+		$result1=$result->fetch_assoc();
+		$res2=$res1['distance'];	
+		$result2=$result1['time'];
+		$dis=$dis+$res2;
+		$tim=$tim+$result2;
+		$i++;
+		$j++;
+	}
+	$timet=$tim;
+	
+			return array($timed,$timet); 
+			
+	}
+	public function retX($from,$to,$time,$arr1,$arr2,$arr3,$mysqli)
+	{
+		$i=array_search(min($arr2),$arr2);
+			$j=array_search(min($arr3),$arr3);
+			$wp=$this->waypoint($arr1[$i],$from,$to,$mysqli);
+			$query="SELECT b_name from transitprovider where b_id='$arr1[$i]' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$result=$queryResult->fetch_assoc();
+			$mindbus=$result['b_name'];
+			$query="SELECT b_name from transitprovider where b_id='$arr1[$j]'  LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$result=$queryResult->fetch_assoc();
+			$mintbus=$result['b_name'];
+			$query="SELECT h_id from transitHolder where s_id='$from' AND b_id='$arr1[$i]' AND waypoint='$wp' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$x=$queryResult->fetch_assoc();
+			$hid=$x['h_id'];
+			//var_dump($hid);
+			//list($td,$tt)=$this->retTime($from,$to,$time,$arr1,$arr2,$arr3,$mysqli);
+			$wp=$this->waypoint($arr1[$j],$from,$to,$mysqli);
+			$query="SELECT time FROM `transitholder_timings` WHERE t_id='$hid' AND SUBTIME(time,'$time')=(SELECT MIN(SUBTIME(time,'$time')) from transitholder_timings where t_id='$hid' AND time>='$time') LIMIT 1";
+			$query2Result=$mysqli->query($query);
+			$timex=$query2Result->fetch_assoc();
+			$timetosd=$timex['time'];
+			$query="SELECT h_id from transitHolder where s_id='$from' AND b_id='$arr1[$j]' AND waypoint='$wp' LIMIT 1";
+			$queryResult=$mysqli->query($query);
+			$x=$queryResult->fetch_assoc();
+			$hid=$x['h_id'];
+			$query="SELECT time FROM `transitholder_timings` WHERE t_id='$hid' AND SUBTIME(time,'$time')=(SELECT MIN(SUBTIME(time,'$time')) from transitholder_timings where t_id='$hid' AND time>='$time') LIMIT 1";
+			$query2Result=$mysqli->query($query);
+			$timex=$query2Result->fetch_assoc();
+			$timetost=$timex['time'];
+			return array($timetosd,$timetost);
+	}
+	}
+
 ?>
