@@ -1,7 +1,7 @@
 Hermes
 ======
 
-NOTE: WORK IN PROGRESS
+NOTE: V2 WIP, ETA: 6 months with complete code change
 
 Hermes is God of Direction
 
